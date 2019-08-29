@@ -12,19 +12,13 @@ namespace Chat
     {
         private Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         private const int bufSize = 8 * 1024;
-        private State state = new State();
+        private State state = new State(bufSize);
         private EndPoint epFrom = new IPEndPoint(IPAddress.Any, 0);
-        private AsyncCallback recv = null;
+        private AsyncCallback recv = null;        
 
-        public class State
-        {
-            public byte[] buffer = new byte[bufSize];
-        }
-
-        public void Server(string address, int port)
+        public void Server(int port)
         {
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-            //_socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             _socket.Bind(new IPEndPoint(IPAddress.Any, port));
             Receive();
         }
@@ -42,7 +36,6 @@ namespace Chat
             {
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
-                //Console.WriteLine("Você: {0}", bytes, text);
             }, state);
         }
 
@@ -57,4 +50,5 @@ namespace Chat
             }, state);
         }
     }
+    
 }
