@@ -12,31 +12,24 @@ namespace Chat
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("CHAT UDP\n");
+            string q = "";
+            List<Tuple<string, int>> ips = new List<Tuple<string, int>>();
 
-            Console.Write("Porta do servidor: ");
-            int portaServidor = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Digite a porta do servidor: ");
+            int porta = Convert.ToInt32(Console.ReadLine());
 
-            UDPSocket servidor = new UDPSocket();
-            servidor.Server(portaServidor);
-
-            Console.Write("IP do cliente: ");
-            string ipCliente = Console.ReadLine();
-
-            Console.Write("Porta do cliente: ");
-            int portaCliente = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("\n");            
-
-            UDPSocket cliente = new UDPSocket();
-            cliente.Client(ipCliente, portaCliente);
-
-            while (true)
+            Console.WriteLine("\nDigite os enderecos no seguinte formato IP:PORTA. Para finalizar a lista digite Q\n");
+            
+            while(q != "Q")
             {
-                string mensagem = Console.ReadLine();
-                cliente.Send(mensagem);
-                Console.ReadKey();
+                string end = Console.ReadLine();
+                string[] ip = end.Split(':');
+                ips.Add(new Tuple<string, int>(ip[0], Convert.ToInt32(ip[1])));
+                q = Console.ReadLine();
             }
+            Console.Clear();
+            UDPSocket servidor = new UDPSocket(ips);
+            servidor.Server(porta);
         }
     }
 }
